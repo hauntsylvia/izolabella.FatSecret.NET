@@ -24,8 +24,11 @@ namespace fatsecret.NET
                 try
                 {
                     Uri thisUrl = new Uri(url);
-                    (new Ping()).Send(thisUrl.Host);
-                    return thisUrl;
+                    PingReply pr = (new Ping()).Send(thisUrl.Host, 3000);
+                    if (pr.Status == IPStatus.Success)
+                        return thisUrl;
+                    else
+                        throw new Exception();
                 }
                 catch { }
             }
