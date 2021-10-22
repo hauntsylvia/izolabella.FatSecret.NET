@@ -16,24 +16,7 @@ namespace fatsecret.NET
         {
             Timeout = TimeSpan.FromSeconds(5),
         };
-        internal string[] urls = new string[] { "https://platform.fatsecret.com/rest/server.api" };
-        internal Uri ResolveCorrectUrl()
-        {
-            foreach (string url in urls)
-            {
-                try
-                {
-                    Uri thisUrl = new Uri(url);
-                    PingReply pr = (new Ping()).Send(thisUrl.Host, 3000);
-                    if (pr.Status == IPStatus.Success)
-                        return thisUrl;
-                    else
-                        throw new Exception();
-                }
-                catch { }
-            }
-            return null;
-        }
+        internal Uri url = new Uri("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
         {
             var byteArray = Encoding.ASCII.GetBytes($"{this.client_id}:{this.client_secret}");
@@ -54,7 +37,7 @@ namespace fatsecret.NET
             this.client_secret = client_secret;
             this.client_id = client_id;
             this.scope = scope;
-            client.BaseAddress = ResolveCorrectUrl();
+            client.BaseAddress = url;
             this.accessToken = (ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
         }
         internal string grant_type = "client_credentials";
