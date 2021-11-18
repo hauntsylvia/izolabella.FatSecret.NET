@@ -12,7 +12,7 @@ namespace fatsecret.NET
     {
         internal HttpClient client = new HttpClient()
         {
-            Timeout = TimeSpan.FromSeconds(5),
+            Timeout = TimeSpan.FromSeconds(15),
         };
         internal Uri url = new Uri("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
