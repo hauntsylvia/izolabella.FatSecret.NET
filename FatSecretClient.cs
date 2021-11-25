@@ -56,12 +56,13 @@ namespace fatsecret.NET
             T result = JsonConvert.DeserializeObject<T>(finContent);
             return result;
         }
-        public async Task<FoodsResult> FoodSearch(string expression, int page = 0)
+        public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
         {
             return await SendAsync<FoodsResult>("foods.search", new Dictionary<string, string>()
             {
                 {"search_expression", expression},
                 {"page_number", page.ToString()},
+                {"max_results", maxResults.ToString()}
             });
         }
         public async Task<FoodsGetV2> FoodInfo(long food_id)
