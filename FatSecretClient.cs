@@ -17,17 +17,17 @@ namespace fatsecret.NET
         internal Uri url = new Uri("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
         {
-            var byteArray = Encoding.ASCII.GetBytes($"{this.client_id}:{this.client_secret}");
+            byte[] byteArray = Encoding.ASCII.GetBytes($"{client_id}:{client_secret}");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-            var values = new Dictionary<string, string>
+            Dictionary<string, string> values = new Dictionary<string, string>
             {
-               { "scope", this.scope },
-               { "grant_type", this.grant_type }
+               { "scope", scope },
+               { "grant_type", grant_type }
             };
-            var content = new FormUrlEncodedContent(values);
-            var response = await client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
+            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+            HttpResponseMessage response = await client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
 
-            var responseString = await response.Content.ReadAsStringAsync();
+            string responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<AccessTokenResult>(responseString);
         }
         public FatSecretClient(string client_secret, string client_id, string scope = "basic")
@@ -36,7 +36,7 @@ namespace fatsecret.NET
             this.client_id = client_id;
             this.scope = scope;
             client.BaseAddress = url;
-            this.accessToken = (ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
+            accessToken = (ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
         }
         internal string grant_type = "client_credentials";
         internal string client_secret = string.Empty;
