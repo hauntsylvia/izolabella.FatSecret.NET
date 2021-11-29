@@ -1,12 +1,39 @@
-﻿namespace fatsecret.NET.Classes
+﻿using fatsecret.NET.Classes.Enums;
+using Newtonsoft.Json;
+using System;
+
+namespace fatsecret.NET.Classes
 {
     public class Food
     {
-        public string food_description;
-        public long food_id;
-        public string food_name;
-        public string food_type;
-        public string food_url;
+        [JsonProperty("food_type")]
+        internal string _foodType;
+        [JsonIgnore]
+        public FoodType foodType
+        {
+            get
+            {
+                if (Enum.TryParse(_foodType, out FoodType f))
+                    return f;
+                else
+                    throw new FormatException();
+            }
+            set
+            {
+                _foodType = value.ToString();
+            }
+        }
+
+        [JsonProperty("food_description")]
+        public string description;
+        [JsonProperty("food_id")]
+        public long id;
+        [JsonProperty("food_name")]
+        public string name;
+        [JsonProperty("brand_name")]
+        public string brandName;
+        [JsonProperty("food_url")]
+        public string url;
         public Servings servings;
     }
 }
