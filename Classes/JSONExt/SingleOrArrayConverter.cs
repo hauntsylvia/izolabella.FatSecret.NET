@@ -22,10 +22,7 @@ namespace fatsecret.NET.Classes.JSONExt
             return new List<T> { token.ToObject<T>() };
         }
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

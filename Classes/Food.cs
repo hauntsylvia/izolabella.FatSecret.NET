@@ -18,10 +18,7 @@ namespace fatsecret.NET.Classes
                 else
                     throw new FormatException();
             }
-            set
-            {
-                this._foodType = value.ToString();
-            }
+            set => this._foodType = value.ToString();
         }
 
         [JsonProperty("food_description")]
