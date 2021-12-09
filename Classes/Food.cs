@@ -13,14 +13,14 @@ namespace fatsecret.NET.Classes
         {
             get
             {
-                if (Enum.TryParse(_foodType, out FoodType f))
+                if (Enum.TryParse(this._foodType, out FoodType f))
                     return f;
                 else
                     throw new FormatException();
             }
             set
             {
-                _foodType = value.ToString();
+                this._foodType = value.ToString();
             }
         }
 

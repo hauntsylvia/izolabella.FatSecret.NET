@@ -17,15 +17,15 @@ namespace fatsecret.NET
         internal Uri url = new Uri("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
         {
-            byte[] byteArray = Encoding.ASCII.GetBytes($"{client_id}:{client_secret}");
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+            byte[] byteArray = Encoding.ASCII.GetBytes($"{this.client_id}:{this.client_secret}");
+            this.client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             Dictionary<string, string> values = new Dictionary<string, string>
             {
-               { "scope", scope },
-               { "grant_type", grant_type }
+               { "scope", this.scope },
+               { "grant_type", this.grant_type }
             };
             FormUrlEncodedContent content = new FormUrlEncodedContent(values);
-            HttpResponseMessage response = await client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
+            HttpResponseMessage response = await this.client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
 
             string responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<AccessTokenResult>(responseString);
@@ -35,8 +35,8 @@ namespace fatsecret.NET
             this.client_secret = client_secret;
             this.client_id = client_id;
             this.scope = scope;
-            client.BaseAddress = url;
-            accessToken = (ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
+            this.client.BaseAddress = this.url;
+            this.accessToken = (this.ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
         }
         internal string grant_type = "client_credentials";
         internal string client_secret = string.Empty;
@@ -48,9 +48,9 @@ namespace fatsecret.NET
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "");
             args.Add("format", "json");
             args.Add("method", method);
-            req.Headers.Add("Authorization", $"Bearer {accessToken}");
+            req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
             req.Content = new FormUrlEncodedContent(args);
-            HttpResponseMessage msg = await client.SendAsync(req);
+            HttpResponseMessage msg = await this.client.SendAsync(req);
             HttpContent content = (msg).Content;
             string finContent = await content.ReadAsStringAsync();
             T result = JsonConvert.DeserializeObject<T>(finContent);
@@ -58,7 +58,7 @@ namespace fatsecret.NET
         }
         public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
         {
-            return await SendAsync<FoodsResult>("foods.search", new Dictionary<string, string>()
+            return await this.SendAsync<FoodsResult>("foods.search", new Dictionary<string, string>()
             {
                 {"search_expression", expression},
                 {"page_number", page.ToString()},
@@ -67,7 +67,7 @@ namespace fatsecret.NET
         }
         public async Task<FoodsGetV2> FoodInfo(long food_id)
         {
-            return await SendAsync<FoodsGetV2>("food.get.v2", new Dictionary<string, string>()
+            return await this.SendAsync<FoodsGetV2>("food.get.v2", new Dictionary<string, string>()
             {
                 {"food_id", food_id.ToString()},
             });
