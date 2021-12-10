@@ -45,16 +45,24 @@ namespace fatsecret.NET
         internal string accessToken = string.Empty;
         internal async Task<T> SendAsync<T>(string method, Dictionary<string, string> args)
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "");
-            args.Add("format", "json");
-            args.Add("method", method);
-            req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
-            req.Content = new FormUrlEncodedContent(args);
-            HttpResponseMessage msg = await this.client.SendAsync(req);
-            HttpContent content = (msg).Content;
-            string finContent = await content.ReadAsStringAsync();
-            T result = JsonConvert.DeserializeObject<T>(finContent);
-            return result;
+            try
+            {
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "");
+                args.Add("format", "json");
+                args.Add("method", method);
+                req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
+                req.Content = new FormUrlEncodedContent(args);
+                HttpResponseMessage msg = await this.client.SendAsync(req);
+                HttpContent content = (msg).Content;
+                string finContent = await content.ReadAsStringAsync();
+                T result = JsonConvert.DeserializeObject<T>(finContent);
+                return result;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw ex;
+            }
         }
         public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
         {
