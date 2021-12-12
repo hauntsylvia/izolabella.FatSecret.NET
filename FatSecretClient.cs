@@ -58,10 +58,11 @@ namespace fatsecret.NET
                 T result = JsonConvert.DeserializeObject<T>(finContent);
                 return result;
             }
-            catch(Exception ex)
+            catch
             {
-                Console.WriteLine(ex.ToString());
-                throw ex;
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
+                return await SendAsync<T>(method, args);
             }
         }
         public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
