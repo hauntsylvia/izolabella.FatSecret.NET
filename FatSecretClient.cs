@@ -43,7 +43,7 @@ namespace fatsecret.NET
         internal string client_id = string.Empty;
         internal string scope = string.Empty;
         internal string accessToken = string.Empty;
-        internal async Task<T> SendAsync<T>(string method, Dictionary<string, string> args)
+        internal async Task<T> SendAsync<T>(string method, Dictionary<string, string> args, int attemptNumber = 0)
         {
             try
             {
@@ -58,11 +58,15 @@ namespace fatsecret.NET
                 T result = JsonConvert.DeserializeObject<T>(finContent);
                 return result;
             }
-            catch
+            catch(Exception ex)
             {
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
-                return await SendAsync<T>(method, args);
+                if (attemptNumber <= 2)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(2));
+                    this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
+                    return await SendAsync<T>(method, args, attemptNumber++);
+                }
+                throw ex;
             }
         }
         public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
