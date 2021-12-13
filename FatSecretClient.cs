@@ -58,13 +58,13 @@ namespace fatsecret.NET
                 T result = JsonConvert.DeserializeObject<T>(finContent);
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (attemptNumber <= 2)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(2));
                     this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
-                    return await SendAsync<T>(method, args, attemptNumber++);
+                    return await this.SendAsync<T>(method, args, attemptNumber++);
                 }
                 throw ex;
             }
