@@ -10,21 +10,21 @@ namespace fatsecret.NET
 {
     public class FatSecretClient
     {
-        internal HttpClient client = new HttpClient()
+        internal HttpClient client = new()
         {
             Timeout = TimeSpan.FromSeconds(15),
         };
-        internal Uri url = new Uri("https://platform.fatsecret.com/rest/server.api");
+        internal Uri url = new("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
         {
             byte[] byteArray = Encoding.ASCII.GetBytes($"{this.client_id}:{this.client_secret}");
             this.client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-            Dictionary<string, string> values = new Dictionary<string, string>
+            Dictionary<string, string> values = new()
             {
                { "scope", this.scope },
                { "grant_type", this.grant_type }
             };
-            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+            FormUrlEncodedContent content = new(values);
             HttpResponseMessage response = await this.client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
 
             string responseString = await response.Content.ReadAsStringAsync();
@@ -47,7 +47,7 @@ namespace fatsecret.NET
         {
             try
             {
-                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "");
+                HttpRequestMessage req = new(HttpMethod.Post, "");
                 args.Add("format", "json");
                 args.Add("method", method);
                 req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
@@ -58,7 +58,7 @@ namespace fatsecret.NET
                 T result = JsonConvert.DeserializeObject<T>(finContent);
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (attemptNumber <= 2)
                 {
@@ -66,7 +66,7 @@ namespace fatsecret.NET
                     this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
                     return await this.SendAsync<T>(method, args, attemptNumber++);
                 }
-                throw ex;
+                throw;
             }
         }
         public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
