@@ -10,8 +10,9 @@ namespace fatsecret.NET.Classes
         public List<Serving> serving;
     }
     public class Serving
-    {/*
-        "added_sugars":"10",
+    {
+        /*
+            "added_sugars":"10",
             "calcium":"8",
             "calories":"159",
             "carbohydrate":"20.02",

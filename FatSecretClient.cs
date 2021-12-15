@@ -36,7 +36,7 @@ namespace fatsecret.NET
             this.client_id = client_id;
             this.scope = scope;
             this.client.BaseAddress = this.url;
-            this.accessToken = (this.ProvidedCodeForAccessToken().GetAwaiter().GetResult()).access_token;
+            this.accessToken = this.ProvidedCodeForAccessToken().GetAwaiter().GetResult().access_token;
         }
         internal string grant_type = "client_credentials";
         internal string client_secret = string.Empty;

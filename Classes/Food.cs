@@ -11,13 +11,7 @@ namespace fatsecret.NET.Classes
         [JsonIgnore]
         public FoodType foodType
         {
-            get
-            {
-                if (Enum.TryParse(this._foodType, out FoodType f))
-                    return f;
-                else
-                    throw new FormatException();
-            }
+            get => (FoodType)Enum.Parse(typeof(FoodType), this._foodType);
             set => this._foodType = value.ToString();
         }
 
@@ -31,6 +25,7 @@ namespace fatsecret.NET.Classes
         public string brandName;
         [JsonProperty("food_url")]
         public string url;
+        [JsonProperty("servings")]
         public Servings servings;
     }
 }
