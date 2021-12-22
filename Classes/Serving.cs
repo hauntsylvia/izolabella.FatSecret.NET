@@ -57,7 +57,8 @@ namespace fatsecret.NET.Classes
         public decimal protein;
         public decimal saturated_fat;
         public string serving_description;
-        public long serving_id;
+        [JsonProperty("serving_id")]
+        public ulong id { get; set; }
         public string serving_url;
         public decimal sodium;
         public decimal sugar;

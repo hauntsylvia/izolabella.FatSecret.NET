@@ -7,8 +7,19 @@ namespace fatsecret.NET.Classes
     [JsonObject(MemberSerialization.OptIn)]
     public class Food
     {
+        [JsonConstructor]
+        public Food(string _foodType, string description, ulong id, string name, string brandName, string url, Servings servings)
+        {
+            this._foodType = _foodType;
+            this.description = description;
+            this.id = id;
+            this.name = name;
+            this.brandName = brandName;
+            this.url = url;
+            this.servings = servings;
+        }
         [JsonProperty("food_type")]
-        internal string _foodType;
+        private string _foodType;
         public FoodType foodType
         {
             get => (FoodType)Enum.Parse(typeof(FoodType), this._foodType);
@@ -18,7 +29,7 @@ namespace fatsecret.NET.Classes
         [JsonProperty("food_description")]
         public string description { get; set; }
         [JsonProperty("food_id")]
-        public long id { get; set; }
+        public ulong id { get; set; }
         [JsonProperty("food_name")]
         public string name { get; set; }
         [JsonProperty("brand_name")]

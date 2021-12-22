@@ -78,7 +78,7 @@ namespace fatsecret.NET
                 {"max_results", maxResults.ToString()}
             });
         }
-        public async Task<FoodsGetV2> FoodInfo(long food_id)
+        public async Task<FoodsGetV2> FoodInfo(ulong food_id)
         {
             return await this.SendAsync<FoodsGetV2>("food.get.v2", new Dictionary<string, string>()
             {
