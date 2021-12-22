@@ -4,11 +4,11 @@ using System;
 
 namespace fatsecret.NET.Classes
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Food
     {
         [JsonProperty("food_type")]
         internal string _foodType;
-        [JsonIgnore]
         public FoodType foodType
         {
             get => (FoodType)Enum.Parse(typeof(FoodType), this._foodType);
@@ -16,16 +16,16 @@ namespace fatsecret.NET.Classes
         }
 
         [JsonProperty("food_description")]
-        public string description;
+        public string description { get; set; }
         [JsonProperty("food_id")]
-        public long id;
+        public long id { get; set; }
         [JsonProperty("food_name")]
-        public string name;
+        public string name { get; set; }
         [JsonProperty("brand_name")]
-        public string brandName;
+        public string brandName { get; set; }
         [JsonProperty("food_url")]
-        public string url;
+        public string url { get; set; }
         [JsonProperty("servings")]
-        public Servings servings;
+        public Servings servings { get; set; }
     }
 }

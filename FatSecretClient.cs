@@ -53,7 +53,7 @@ namespace fatsecret.NET
                 req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
                 req.Content = new FormUrlEncodedContent(args);
                 HttpResponseMessage msg = await this.client.SendAsync(req);
-                HttpContent content = (msg).Content;
+                HttpContent content = msg.Content;
                 string finContent = await content.ReadAsStringAsync();
                 T result = JsonConvert.DeserializeObject<T>(finContent);
                 return result;
