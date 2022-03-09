@@ -1,7 +1,21 @@
-﻿namespace fatsecret.NET.Classes
+﻿namespace izolabella.FatSecret.NET.Classes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AccessTokenResult
     {
-        public string access_token;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="AccessToken"></param>
+        public AccessTokenResult(string AccessToken)
+        {
+            this.AccessToken = AccessToken;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AccessToken { get; }
     }
 }

@@ -1,14 +1,23 @@
-﻿using fatsecret.NET.Classes.JSONExt;
+﻿using izolabella.FatSecret.NET.Classes.JSONExt;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace fatsecret.NET.Classes
+namespace izolabella.FatSecret.NET.Classes
 {
-    public class Servings
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ServingsW
     {
+        /// <summary>
+        /// A list of all servings.
+        /// </summary>
         [JsonConverter(typeof(SingleOrArrayConverter<Serving>))]
-        public List<Serving> serving;
+        public List<Serving> Servings;
     }
+    /// <summary>
+    /// A fully detailed, single serving for a food item.
+    /// </summary>
     public class Serving
     {
         /*
@@ -39,6 +48,12 @@ namespace fatsecret.NET.Classes
             "vitamin_c":"0",
             "vitamin_d":"2"
         */
+        /// <summary>
+        /// The id of this serving resource.
+        /// </summary>
+        [JsonProperty("serving_id")]
+        public ulong Id { get; set; }
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public decimal added_sugars;
         public decimal calcium;
         public decimal calories;
@@ -57,8 +72,6 @@ namespace fatsecret.NET.Classes
         public decimal protein;
         public decimal saturated_fat;
         public string serving_description;
-        [JsonProperty("serving_id")]
-        public ulong id { get; set; }
         public string serving_url;
         public decimal sodium;
         public decimal sugar;
@@ -66,5 +79,6 @@ namespace fatsecret.NET.Classes
         public decimal vitamin_a;
         public decimal vitamin_c;
         public decimal vitamin_d;
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 }

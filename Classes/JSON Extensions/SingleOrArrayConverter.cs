@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace fatsecret.NET.Classes.JSONExt
+namespace izolabella.FatSecret.NET.Classes.JSONExt
 {
     internal class SingleOrArrayConverter<T> : JsonConverter
     {

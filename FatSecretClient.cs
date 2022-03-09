@@ -1,4 +1,4 @@
-﻿using fatsecret.NET.Classes;
+﻿using izolabella.FatSecret.NET.Classes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -6,83 +6,104 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fatsecret.NET
+namespace izolabella.FatSecret.NET
 {
+    /// <summary>
+    /// Provides a client for interacting with the FatSecret API.
+    /// </summary>
     public class FatSecretClient
     {
-        internal HttpClient client = new()
+        private readonly HttpClient Client = new()
         {
             Timeout = TimeSpan.FromSeconds(15),
         };
-        internal Uri url = new("https://platform.fatsecret.com/rest/server.api");
+        private readonly Uri Address = new("https://platform.fatsecret.com/rest/server.api");
         internal async Task<AccessTokenResult> ProvidedCodeForAccessToken()
         {
-            byte[] byteArray = Encoding.ASCII.GetBytes($"{this.client_id}:{this.client_secret}");
-            this.client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-            Dictionary<string, string> values = new()
+            byte[] ByteArray = Encoding.ASCII.GetBytes($"{this.ClientId}:{this.ClientSecret}");
+            this.Client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(ByteArray));
+            Dictionary<string, string> Values = new()
             {
-               { "scope", this.scope },
-               { "grant_type", this.grant_type }
+               { "scope", this.Scope },
+               { "grant_type", this.GrantType }
             };
-            FormUrlEncodedContent content = new(values);
-            HttpResponseMessage response = await this.client.PostAsync("https://oauth.fatsecret.com/connect/token", content);
+            FormUrlEncodedContent Content = new(Values);
+            HttpResponseMessage Response = await this.Client.PostAsync("https://oauth.fatsecret.com/connect/token", Content);
 
-            string responseString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AccessTokenResult>(responseString);
+            string ResponseString = await Response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AccessTokenResult>(ResponseString);
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FatSecretClient"/> class.
+        /// </summary>
+        /// <param name="client_secret">The client secret./</param>
+        /// <param name="client_id">The client id.</param>
+        /// <param name="scope">The application's scope.</param>
         public FatSecretClient(string client_secret, string client_id, string scope = "basic")
         {
-            this.client_secret = client_secret;
-            this.client_id = client_id;
-            this.scope = scope;
-            this.client.BaseAddress = this.url;
-            this.accessToken = this.ProvidedCodeForAccessToken().GetAwaiter().GetResult().access_token;
+            this.ClientSecret = client_secret;
+            this.ClientId = client_id;
+            this.Scope = scope;
+            this.Client.BaseAddress = this.Address;
+            this.AccessToken = this.ProvidedCodeForAccessToken().GetAwaiter().GetResult().AccessToken;
         }
-        internal string grant_type = "client_credentials";
-        internal string client_secret = string.Empty;
-        internal string client_id = string.Empty;
-        internal string scope = string.Empty;
-        internal string accessToken = string.Empty;
-        internal async Task<T> SendAsync<T>(string method, Dictionary<string, string> args, int attemptNumber = 0)
+        internal string GrantType = "client_credentials";
+        internal string ClientSecret = string.Empty;
+        internal string ClientId = string.Empty;
+        internal string Scope = string.Empty;
+        internal string AccessToken = string.Empty;
+        internal async Task<T> SendAsync<T>(string Method, Dictionary<string, string> Args, int AttemptNumber = 0)
         {
             try
             {
-                HttpRequestMessage req = new(HttpMethod.Post, "");
-                args.Add("format", "json");
-                args.Add("method", method);
-                req.Headers.Add("Authorization", $"Bearer {this.accessToken}");
-                req.Content = new FormUrlEncodedContent(args);
-                HttpResponseMessage msg = await this.client.SendAsync(req);
-                HttpContent content = msg.Content;
-                string finContent = await content.ReadAsStringAsync();
-                T result = JsonConvert.DeserializeObject<T>(finContent);
-                return result;
+                HttpRequestMessage Req = new(HttpMethod.Post, "");
+                Args.Add("format", "json");
+                Args.Add("method", Method);
+                Req.Headers.Add("Authorization", $"Bearer {this.AccessToken}");
+                Req.Content = new FormUrlEncodedContent(Args);
+                HttpResponseMessage Msg = await this.Client.SendAsync(Req);
+                HttpContent Content = Msg.Content;
+                string StringContent = await Content.ReadAsStringAsync();
+                T ParsedContent = JsonConvert.DeserializeObject<T>(StringContent);
+                return ParsedContent;
             }
             catch (Exception)
             {
-                if (attemptNumber <= 2)
+                if (AttemptNumber <= 2)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(2));
-                    this.accessToken = (await this.ProvidedCodeForAccessToken()).access_token;
-                    return await this.SendAsync<T>(method, args, attemptNumber++);
+                    this.AccessToken = (await this.ProvidedCodeForAccessToken()).AccessToken;
+                    return await this.SendAsync<T>(Method, Args, AttemptNumber++);
                 }
                 throw;
             }
         }
-        public async Task<FoodsResult> FoodSearch(string expression, int page = 0, int maxResults = 5)
+        /// <summary>
+        /// Search the FatSecret API for foods based on a given expression.
+        /// </summary>
+        /// <param name="Expression">The expression to search for.</param>
+        /// <param name="Page">The page number.</param>
+        /// <param name="MaxResults">Maximum number of results that can be returned per page.</param>
+        /// <returns>A <see cref="FoodsResult"/> object for representing searched-for foods.</returns>
+        public async Task<FoodsResult> FoodSearch(string Expression, int Page = 0, int MaxResults = 5)
         {
             return await this.SendAsync<FoodsResult>("foods.search", new Dictionary<string, string>()
             {
-                {"search_expression", expression},
-                {"page_number", page.ToString()},
-                {"max_results", maxResults.ToString()}
+                {"search_expression", Expression},
+                {"page_number", Page.ToString()},
+                {"max_results", MaxResults.ToString()}
             });
         }
-        public async Task<FoodsGetV2> FoodInfo(ulong food_id)
+        /// <summary>
+        /// Return specific information from a food's id.
+        /// </summary>
+        /// <param name="FoodId">The id of the food to return information for.</param>
+        /// <returns></returns>
+        public async Task<FoodInformationResult> FoodInfo(ulong FoodId)
         {
-            return await this.SendAsync<FoodsGetV2>("food.get.v2", new Dictionary<string, string>()
+            return await this.SendAsync<FoodInformationResult>("food.get.v2", new Dictionary<string, string>()
             {
-                {"food_id", food_id.ToString()},
+                {"food_id", FoodId.ToString()},
             });
         }
     }

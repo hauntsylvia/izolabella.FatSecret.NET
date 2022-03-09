@@ -1,4 +1,4 @@
-﻿namespace fatsecret.NET.Classes
+﻿namespace izolabella.FatSecret.NET.Classes
 {
     internal class APISend
     {
